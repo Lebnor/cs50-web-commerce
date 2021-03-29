@@ -14,6 +14,14 @@ def index(request):
     })
 
 
+def create(request):
+    
+    return render(request, "auctions/create.html", {
+        
+    })
+
+
+
 def listing(request, listing):
     query = Listing.objects.filter(title=listing).all()
     listingobj = None
