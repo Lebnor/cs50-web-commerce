@@ -1,0 +1,51 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block title %} Create new Listing {% endblock %}
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+
+    <h1> Create new Listing</h1>
+
+    <form class="form" method="POST" action="{% url 'create' %}">
+        {% csrf_token %}
+
+        {{ form }}
+        <!-- title -->
+        <div class="mb-3">
+            <label for="title" class="form-label">Listing Title</label>
+            <input type="text" class="form-control" id="title" placeholder="title...">
+        </div>
+
+        <!-- description -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Listing description</label>
+            <textarea placeholder="description..." class="form-control" id="description" rows="2"></textarea>
+        </div>
+
+        <!-- starting bid -->
+        <div class="mb-3">
+            <label for="bid" class="form-label">Starting bid</label>
+            <input type="number" class="form-control" id="bid" placeholder="bid...">
+        </div>
+
+        <!-- optional photo url -->
+        <div class="mb-3">
+            <label for="photo" class="form-label">(Optional) Photo URL</label>
+            <input type="text" class="form-control" id="photo" placeholder="photo url...">
+        </div>
+
+        <!-- optional category -->
+        <div class="mb-3">
+            <label for="category" class="form-label">(Optional) Category</label>
+            <input type="text" class="form-control" id="category" placeholder="category...">
+        </div> 
+
+        <input type="submit" value="Create Listing" class="btn btn-outline-success">
+    </form>
+
+{% endblock %}
