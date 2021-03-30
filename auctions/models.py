@@ -14,6 +14,7 @@ class Listing(models.Model):
     bid = models.IntegerField(blank=True)
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, unique=False)
     following = models.ManyToManyField(User,related_name='following', blank=True)
+    category = models.CharField(null=True, blank=True, max_length=32)
 
     def __str__(self):
         return f"{self.title}"

@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from .models import User, Comment, Listing
 from .forms import NewListingForm
+from .utils import *
 
 def index(request):
     
@@ -16,7 +17,13 @@ def index(request):
 
 def create(request):
     if request.method == "POST":
-        pass
+        form = NewListingForm(request.POST)
+        if form.is_valid():
+            save_listing(form)
+
+
+            return HttpResponseRedirect(reverse('index'))
+        
     return render(request, "auctions/create.html", {
         "form": NewListingForm()
     })

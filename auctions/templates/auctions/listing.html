@@ -27,10 +27,24 @@ Listing - {{ listing.title }}
      <form action="{% url 'listing' listing %}" method="POST">
 
         {% csrf_token %}
-        {% if user in listing.following.all %}
-            <input name="wl" type="submit" value="Remove from watch list">
-        {% else %}
-            <input name="wl" type="submit" value="Add to watch list">
+
+
+        <!-- add/remove watchlist -->
+        {% if user.is_authenticated %}
+            {% if user in listing.following.all %}
+                <input name="wl" type="submit" value="Remove from watch list">
+            {% else %}
+                <input name="wl" type="submit" value="Add to watch list">
+            {% endif %}
+        {% endif %}
+
+        <!-- bid -->
+        {% if user.is_authenticated %}
+            <h5>Make a bid <i> (Starting from {{ listing.bid }} )</i> </h5>
+            <form method="POST" action="{% url 'listing' listing %}">
+                <input class="form-control" name="bid" type="number" min="{{ listing.bid }}">
+                <input type="submit" value="Make bid">
+            </form>
         {% endif %}
     </form>
 

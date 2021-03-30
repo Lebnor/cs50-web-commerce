@@ -11,7 +11,7 @@
 
     {% for listing in listings %}
     <div class="listing border">
-        <a href="{% url 'listing' listing %}">
+        <a href="{% url 'listing' listing.id %}">
            <h3> {{ listing.title }} </h3>
         </a>
            <h5> {{ listing.description }} </h5>
