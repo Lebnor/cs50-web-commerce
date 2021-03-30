@@ -6,48 +6,53 @@ Listing - {{ listing.title }}
 {% endblock %}
 
 {% block body %}
+<div class="row justify-content-center">
 
+    <div class="mx-auto">
     <h5> {{ listing.description }} </h5>
+    <hr>
     
-    {% ifequal listing.winner user %}
-     You won this listing
-    {% else %}
-     {% if listing.winner %}
-     <p>Winner: {{ listing.winner }}</p>
-     {%else %}
-     <p>Active Listing </p>
-     {% endif %}
-     {% endifequal %}
+    <div class="listing-item">
+        {% ifequal listing.winner user %}
+         You won this listing
+        {% else %}
+         {% if listing.winner %}
+         <p>Winner: {{ listing.winner }}</p>
+         {% endif %}
+         {% endifequal %}
+    </div>
 
      {% if listing.photourl %}
-     <img width="100px" class="w-25" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+     <div class="listing-item">
+        <img width="100px" class="w-25" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+     </div>
      {% endif %}
 
+
      <!-- add/remove to watchlist -->
-     <form action="{% url 'listing' listing %}" method="POST">
+     <form action="{% url 'listing' listing.uuid listing.title %}" method="POST">
 
         {% csrf_token %}
 
-
-        <!-- add/remove watchlist -->
-        {% if user.is_authenticated %}
-            {% if user in listing.following.all %}
-                <input name="wl" type="submit" value="Remove from watch list">
-            {% else %}
-                <input name="wl" type="submit" value="Add to watch list">
+        <div class="listing-item">
+            <!-- add/remove watchlist -->
+            {% if user.is_authenticated %}
+                {% if user in listing.following.all %}
+                    <input class="btn btn-outline-primary" name="wl" type="submit" value="Remove from watch list">
+                {% else %}
+                    <input class="btn btn-outline-primary" name="wl" type="submit" value="Add to watch list">
+                {% endif %}
             {% endif %}
-        {% endif %}
-
-        <!-- bid -->
-        {% if user.is_authenticated %}
-            <h5>Make a bid <i> (Starting from {{ listing.bid }} )</i> </h5>
-            <form method="POST" action="{% url 'listing' listing %}">
-                <input class="form-control" name="bid" type="number" min="{{ listing.bid }}">
-                <input type="submit" value="Make bid">
-            </form>
-        {% endif %}
-    </form>
-
+        </div>
+            <!-- bid -->
+            <div class="listing-item">
+                {% if user.is_authenticated %}
+                    <h5>Make a bid <i> (Starting from {{ listing.bid }} )</i> </h5>
+                        <input  class="form-control" name="bid" type="number" min="{{ listing.bid }}">
+                        <input class="btn btn-outline-primary" type="submit" value="Make bid">
+                {% endif %}
+            </div>
+        </form>
 
      <p>Curr price: {{ listing.bid }}</p>
      <p>Num followers: {{ listing.following.all|length }} </p>
@@ -56,5 +61,7 @@ Listing - {{ listing.title }}
     {% for comment in listing.comments.all %}
     <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
     {% endfor %}
+</div>
+</div>
 
 {% endblock %}

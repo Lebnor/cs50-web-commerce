@@ -30,18 +30,28 @@ def create(request):
 
 
 
-def listing(request, listing):
-    query = Listing.objects.filter(title=listing).all()
-    listingobj = None
-    if query:
-        listingobj = query[0]
+def listing(request, uuid, title):
+    user = request.user
+    listingobj = Listing.objects.filter(uuid=uuid)[0]
 
-    if request.method == "POST" and query:
-        user = request.user
-        if user in listingobj.following.all():
-            listingobj.following.remove(user)
-        else:
-            listingobj.following.add(user)
+    if request.method == "POST":
+        try:
+            if request.POST['bid']:
+                print(request.POST['bid'])
+                listingobj.bid=request.POST['bid']
+                listingobj.save()
+        
+        except:
+            pass
+        try:
+            if request.POST['wl']:
+                if user in listingobj.following.all():
+                    listingobj.following.remove(user)
+                else:
+                    listingobj.following.add(user)
+        except:
+            pass
+
         
 
     return render(request, "auctions/listing.html", {

@@ -11,5 +11,5 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("create", views.create, name="create"),
-    path("<str:listing>", views.listing, name="listing")
+    path("<str:uuid>/<str:title>", views.listing, name="listing")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

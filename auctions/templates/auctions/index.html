@@ -6,34 +6,42 @@
 
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h1 class="text-center">Active Listings</h1>
 
 
+    <div class="row">
     {% for listing in listings %}
-    <div class="listing border">
-        <a href="{% url 'listing' listing.id %}">
-           <h3> {{ listing.title }} </h3>
+    <div class="listing border col-lg-5 col-12 mx-auto">
+        <a href="{% url 'listing' listing.uuid listing.title %}">
+           <h3 class="text-center"> {{ listing.title }} </h3>
         </a>
-           <h5> {{ listing.description }} </h5>
-        
+           <p class="fs-1"> {{ listing.description }} </p>
+            <hr>
 
            {% ifequal listing.winner user %}
             You won this listing
            {% else %}
             {% if listing.winner %}
             <p>Winner: {{ listing.winner }}</p>
-            {%else %}
-            <p>Active Listing </p>
             {% endif %}
             {% endifequal %}
 
             {% if listing.photourl %}
-            <img width="100px" class="w-25" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+            <a href="{% url 'listing' listing.uuid listing.title %}">
+                <img width="100px" class="w-25" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+            </a>
             {% endif %}
-           <p>Curr price: {{ listing.bid }}</p>
-            <p>Num followers: {{ listing.following.all|length }} </p>
-            <p>Following: {% if user in listing.following.all %} yes {%else %} no {%endif%}</p>
-           comments:
+           <p>Current price: {{ listing.bid }}</p>
+            <p>Number of followers: {{ listing.following.all|length }} </p>
+            <p class="text-info">{% if user in listing.following.all %} <i>This item is in your watchlist </i> {%else %} {%endif%}</p>
+           
+            <p class="text-dark">
+            {% if comments %}
+                comments:
+            {% else %}
+                There are no comments on this item.
+            {% endif %}
+            </p>
            {% for comment in listing.comments.all %}
            <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
             {% endfor %}
@@ -44,6 +52,6 @@
 
 
     {% endfor %}
+</div>
     <br>
-    TODO
 {% endblock %}
