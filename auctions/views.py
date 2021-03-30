@@ -14,14 +14,20 @@ def index(request):
         "listings": Listing.objects.filter(winner=None)
     })
 
+def show_all(request):
 
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()
+    })
+
+# creating new listing
 def create(request):
     if request.method == "POST":
         form = NewListingForm(request.POST)
         if form.is_valid():
-            save_listing(form)
-
-
+            new_listing = save_listing(form)
+            new_listing.owner = request.user
+            new_listing.save()
             return HttpResponseRedirect(reverse('index'))
         
     return render(request, "auctions/create.html", {
@@ -33,16 +39,21 @@ def create(request):
 def listing(request, uuid, title):
     user = request.user
     listingobj = Listing.objects.filter(uuid=uuid)[0]
-
     if request.method == "POST":
+        # user placed a bid on this item
         try:
             if request.POST['bid']:
-                print(request.POST['bid'])
-                listingobj.bid=request.POST['bid']
+                amount = int(request.POST['bid'])
+                listingobj.last_bid = amount
+                listingobj.total_price += amount
+                if amount > listingobj.highest_bid:
+                    listingobj.highest_bid = amount
+                    listingobj.highest_bidder = user
                 listingobj.save()
-        
         except:
             pass
+    
+        # user added/removed from watchlist
         try:
             if request.POST['wl']:
                 if user in listingobj.following.all():
@@ -52,8 +63,16 @@ def listing(request, uuid, title):
         except:
             pass
 
-        
+        # user closed this listing
+        try:
+            if request.POST['close']:
+                listingobj.winner = listingobj.highest_bidder
+                listingobj.save()
+                return HttpResponseRedirect(reverse('index'))
+        except:
+            pass
 
+    # return to the same listing
     return render(request, "auctions/listing.html", {
         "listing": listingobj
     })

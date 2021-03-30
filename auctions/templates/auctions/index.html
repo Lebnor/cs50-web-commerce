@@ -1,8 +1,5 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
-{% block head %} 
-<link rel="stylesheet" href="{% static 'auctions/index.css'%}">
-{% endblock %}
 
 
 {% block body %}
@@ -11,11 +8,11 @@
 
     <div class="row">
     {% for listing in listings %}
-    <div class="listing border col-lg-5 col-12 mx-auto">
+    <div  class="listing border col-lg-5 col-10 mx-auto">
         <a href="{% url 'listing' listing.uuid listing.title %}">
-           <h3 class="text-center"> {{ listing.title }} </h3>
+           <h3 class="text-center text"> {{ listing.title }} </h3>
         </a>
-           <p class="fs-1"> {{ listing.description }} </p>
+           <p class="fs-1 text"> {{ listing.description }} </p>
             <hr>
 
            {% ifequal listing.winner user %}
@@ -28,30 +25,23 @@
 
             {% if listing.photourl %}
             <a href="{% url 'listing' listing.uuid listing.title %}">
-                <img width="100px" class="w-25" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+                <img  class="w-25 mx-auto" src="{{ listing.photourl }}" alt="{{ listing.title }}">
             </a>
             {% endif %}
-           <p>Current price: {{ listing.bid }}</p>
+           <p>Current price: <strong> ${{ listing.total_price }} </strong> </p>
             <p>Number of followers: {{ listing.following.all|length }} </p>
             <p class="text-info">{% if user in listing.following.all %} <i>This item is in your watchlist </i> {%else %} {%endif%}</p>
            
-            <p class="text-dark">
-            {% if comments %}
-                comments:
-            {% else %}
-                There are no comments on this item.
-            {% endif %}
-            </p>
-           {% for comment in listing.comments.all %}
-           <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
-            {% endfor %}
+           <!-- comments -->
+            <p class="text-dark">There are {{ listing.comments.all|length }} comments on this item</p>
+            
         </div>
 
         {% empty %}
-        <p>There are no listings currently</p>
+        <p class="mx-auto text-center text-danger">There are no listings currently!</p>
 
 
     {% endfor %}
-</div>
+    </div>
     <br>
 {% endblock %}

@@ -10,9 +10,10 @@ def save_listing(form):
     new_listing = Listing(
         title=title,
         description=description,
-        bid=starting_bid,
+        last_bid=starting_bid,
         photourl=photo_url,
         category=category
     )
 
     Listing.save(new_listing)
+    return new_listing

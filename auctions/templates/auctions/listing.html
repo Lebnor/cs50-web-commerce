@@ -6,10 +6,9 @@ Listing - {{ listing.title }}
 {% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
 
-    <div class="mx-auto">
-    <h5> {{ listing.description }} </h5>
+<div class="listing-container">
+<h5 class="text">  {{ listing.description }} </h5>
     <hr>
     
     <div class="listing-item">
@@ -24,7 +23,7 @@ Listing - {{ listing.title }}
 
      {% if listing.photourl %}
      <div class="listing-item">
-        <img width="100px" class="w-25" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+        <img class="w-50" src="{{ listing.photourl }}" alt="{{ listing.title }}">
      </div>
      {% endif %}
 
@@ -34,9 +33,17 @@ Listing - {{ listing.title }}
 
         {% csrf_token %}
 
+        {% ifequal user listing.owner %}
+        <div class="listing-item">
+            <input name="close" type="submit" class="btn btn-block btn-danger" value="Close this Listing"></input>
+        </div>    
+        {% endifequal %}
+    
+    
         <div class="listing-item">
             <!-- add/remove watchlist -->
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and user != listing.owner %}
+
                 {% if user in listing.following.all %}
                     <input class="btn btn-outline-primary" name="wl" type="submit" value="Remove from watch list">
                 {% else %}
@@ -46,22 +53,35 @@ Listing - {{ listing.title }}
         </div>
             <!-- bid -->
             <div class="listing-item">
-                {% if user.is_authenticated %}
-                    <h5>Make a bid <i> (Starting from {{ listing.bid }} )</i> </h5>
-                        <input  class="form-control" name="bid" type="number" min="{{ listing.bid }}">
-                        <input class="btn btn-outline-primary" type="submit" value="Make bid">
+                {% if user.is_authenticated and user != listing.owner %}
+                    <h5>Make a bid <i> (Starting from ${{ listing.last_bid }} )</i> </h5>
+                        <input  class="form-control" name="bid" type="number" min="{{ listing.last_bid }}">
+                        <input class="mt-1 btn btn-outline-primary" type="submit" value="Make bid">
                 {% endif %}
             </div>
         </form>
 
-     <p>Curr price: {{ listing.bid }}</p>
-     <p>Num followers: {{ listing.following.all|length }} </p>
-     <p>Following: {% if user in listing.following.all %} yes {%else %} no {%endif%}</p>
+     <p>Current price: ${{ listing.total_price }}</p>
+     <p>Number of followers: {{ listing.following.all|length }} </p>
+     <p>{% if user in listing.following.all and user != listing.owner %}
+          <i class="text-info">This item is in your watchlist</i>
+           {%else %}
+             {%endif%}
+    </p>
     comments:
+    <ul>
     {% for comment in listing.comments.all %}
-    <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
-    {% endfor %}
-</div>
+    <li>
+        <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
+    </li>    
+    </ul>
 </div>
 
+    {% empty %}
+        {% if user.is_authenticated %}
+            <li>Be the first to comment!</li>
+        {% else %}
+            <p class="text-warning">Log in to comment on this item</p>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

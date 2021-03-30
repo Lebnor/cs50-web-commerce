@@ -11,19 +11,24 @@
         {% block head %} {%endblock%}
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid p-0 m-0">
 
-            <h1>Auctions</h1>
-            <div>
+            <div class="row no-gutters top-nav">
+            <h1 class="navbar-brand">Auctions</h1>
+            <div class="navbar-text">
                 {% if user.is_authenticated %}
                     Signed in as <strong>{{ user.username }}</strong>.
                 {% else %}
                     Not signed in.
                 {% endif %}
+                {% now " l d/m" %}
             </div>
             <ul class="nav">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'all' %}">All Listings</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -41,10 +46,15 @@
                     </li>
                 {% endif %}
             </ul>
-            <hr>
+        </div>
 
-            {% block body %}
-            {% endblock %}
+        <br>
+            <div class="row">
+                <div class="mx-auto">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
     
 
         </div>

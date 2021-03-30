@@ -1,9 +1,9 @@
 from django import forms
 
 attributes = {
-    'class': 'form-control mb-3 mt-0 text-info'
+    'class': 'form-control mb-3 mt-0 text-info',
+    'rows': 3
 }
-
 
 class NewListingForm(forms.Form):
     title = forms.CharField(label='Title', max_length=100, widget=forms.TextInput(attrs=attributes))
