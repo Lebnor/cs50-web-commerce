@@ -11,10 +11,12 @@
         {% block head %} {%endblock%}
     </head>
     <body>
+
+        <!-- navigation bar -->
         <div class="container-fluid p-0 m-0">
 
             <div class="row no-gutters top-nav">
-            <h1 class="navbar-brand">Auctions</h1>
+            <a class="navbar-brand" href="{% url 'index' %}">Auctions</a>
             <div class="navbar-text">
                 {% if user.is_authenticated %}
                     Signed in as <strong>{{ user.username }}</strong>.
@@ -24,12 +26,64 @@
                 {% now " l d/m" %}
             </div>
             <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'all' %}">All Listings</a>
-                </li>
+                <!-- select page to browse -->
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Browse
+                </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'index' %}">Active Listings</a></li>
+                    <li><a class="dropdown-item" href="{% url 'all' %}">All Listings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'watchlist' %}">Your watchlist</a></li>
+                    <li><a class="dropdown-item" href="{% url 'myposts' %}">Your posts</a></li>
+                  </ul>
+
+                  <!-- categories -->
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    By Category
+                </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="category-wrapper">
+                        <li><a class="dropdown-item" href="{% url 'category' 'Antiques' %}">Antiques</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Art' %}">Art</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Baby' %}">Baby</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Books' %}">Books</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Business &amp; Industrial' %}">Business &amp; Industrial</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Cameras & Photo' %}">Cameras &amp; Photo</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Cell Phones & Accessories' %}">Cell Phones &amp; Accessories</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Clothing, Shoes & Accessories' %}">Clothing, Shoes &amp; Accessories</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Coins & Paper Money' %}">Coins &amp; Paper Money</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Collectibles' %}">Collectibles</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Computers or Tablets & Networking' %}">Computers/Tablets &amp; Networkin</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Consumer Electronics' %}">Consumer Electronics</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Crafts' %}">Crafts</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Dolls & Bears' %}">Dolls &amp; Bears</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'DVDs & Movies' %}">DVDs &amp; Movies</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'eBay Motors' %}">eBay Motors</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Entertainment Memorabilia' %}">Entertainment Memorabilia</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Gift Cards & Coupons' %}">Gift Cards &amp; Coupons</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Health & Beauty' %}">Health &amp; Beauty</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Home & Garden' %}">Home &amp; Garden</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Jewelry & Watches' %}">Jewelry &amp; Watches</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Music' %}">Music</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Musical Instruments & Gear' %}">Musical Instruments &amp; Gear</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Pet Supplies' %}">Pet Supplies</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Pottery & Glass' %}">Pottery &amp; Glass</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Real Estate' %}">Real Estate</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Specialty Services' %}">Specialty Services</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Sporting Goods' %}">Sporting Goods</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Sports Mem, Cards & Fan Shop' %}">Sports Mem, Cards &amp; Fan Shop</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Stamps' %}">Stamps</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Tickets & Experiences' %}">Tickets &amp; Experiences</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Toys & Hobbies' %}">Toys &amp; Hobbies</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Travel' %}">Travel</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Video Games & Consoles' %}">Video Games &amp; Consoles</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category' 'Everything Else' %}">Everything Else</a></li>
+                        </div>
+                    </ul>
+    
+
+
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'create' %}">Create new Listing</a>
@@ -58,5 +112,7 @@
     
 
         </div>
+        <!-- JavaScript Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>  
     </body>
 </html>

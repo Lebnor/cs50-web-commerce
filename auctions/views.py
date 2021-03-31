@@ -4,20 +4,43 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Comment, Listing
+from .models import User, Comment, Listing, Bid
 from .forms import NewListingForm
 from .utils import *
 
 def index(request):
     
     return render(request, "auctions/index.html", {
+        "header": "Active Listings:",
         "listings": Listing.objects.filter(winner=None)
+    })
+
+def watchlist(request):
+    return render(request, "auctions/index.html", {
+        "header": "Your watchlist:",
+        "listings": request.user.following.all()
     })
 
 def show_all(request):
 
     return render(request, "auctions/index.html", {
+        "header": "All Listings:",
         "listings": Listing.objects.all()
+    })
+
+def my_posts(request):
+    return render(request, "auctions/index.html", {
+        "header": "Your posts:",
+        "listings": Listing.objects.filter(owner=request.user).all()
+    })
+
+
+# browse a category
+def category(request, category):
+    print(f"looking for category {category}")
+    return render(request, "auctions/index.html", {
+        "header": f"Category - {category}:",
+        "listings": Listing.objects.filter(category=category).all()
     })
 
 # creating new listing
@@ -25,7 +48,7 @@ def create(request):
     if request.method == "POST":
         form = NewListingForm(request.POST)
         if form.is_valid():
-            new_listing = save_listing(form)
+            new_listing = save_listing(request, form)
             new_listing.owner = request.user
             new_listing.save()
             return HttpResponseRedirect(reverse('index'))
@@ -44,11 +67,10 @@ def listing(request, uuid, title):
         try:
             if request.POST['bid']:
                 amount = int(request.POST['bid'])
-                listingobj.last_bid = amount
+                bid = Bid(amount=amount, bidder=user)
+                Bid.save(bid)
                 listingobj.total_price += amount
-                if amount > listingobj.highest_bid:
-                    listingobj.highest_bid = amount
-                    listingobj.highest_bidder = user
+                listingobj.last_bid = bid
                 listingobj.save()
         except:
             pass
@@ -66,9 +88,25 @@ def listing(request, uuid, title):
         # user closed this listing
         try:
             if request.POST['close']:
-                listingobj.winner = listingobj.highest_bidder
+                if listingobj.last_bid.bidder == user:
+                    # no one placed a bid yet
+                    return render(request, "auctions/listing.html", {
+                        "listing": listingobj,
+                        "close_bid_message": "No one placed a bid on your item yet."
+                    })
+                listingobj.winner = listingobj.last_bid.bidder
                 listingobj.save()
                 return HttpResponseRedirect(reverse('index'))
+        except:
+            pass
+
+        # user commented on this listing
+        try:
+            if request.POST['comment']:
+                comment = Comment(author=user, listing=listingobj, text=request.POST['comment'])
+                Comment.save(comment)
+                listingobj.comments.add(comment)
+                listingobj.save()
         except:
             pass
 

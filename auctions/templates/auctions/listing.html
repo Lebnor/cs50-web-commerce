@@ -8,36 +8,44 @@ Listing - {{ listing.title }}
 {% block body %}
 
 <div class="listing-container">
-<h5 class="text">  {{ listing.description }} </h5>
-    <hr>
+    <h3>Description:</h3>
+<p class="text col">  {{ listing.description }} </p>
     
     <div class="listing-item">
-        {% ifequal listing.winner user %}
-         You won this listing
-        {% else %}
-         {% if listing.winner %}
-         <p>Winner: {{ listing.winner }}</p>
-         {% endif %}
-         {% endifequal %}
+
+
+
+        
     </div>
 
+    <!-- image -->
      {% if listing.photourl %}
-     <div class="listing-item">
+     <div class="listing-item text-center">
         <img class="w-50" src="{{ listing.photourl }}" alt="{{ listing.title }}">
      </div>
      {% endif %}
 
 
-     <!-- add/remove to watchlist -->
+
      <form action="{% url 'listing' listing.uuid listing.title %}" method="POST">
 
         {% csrf_token %}
 
-        {% ifequal user listing.owner %}
-        <div class="listing-item">
-            <input name="close" type="submit" class="btn btn-block btn-danger" value="Close this Listing"></input>
-        </div>    
-        {% endifequal %}
+        <!-- close listing / announce winner -->
+        {% if user == listing.winner %}
+            <p class="text-info col">You won this listing!</p>
+        {% elif listing.winner %}
+            <p class="text-info col">User {{ listing.winner }} has won this listing!</p>
+        {% elif user == listing.owner %}
+            <div class="listing-item">
+                <input name="close" type="submit" class="btn btn-block btn-danger" value="Close this Listing"></input>
+            </div>    
+            {% if close_bid_message %}
+                <p class="col text-danger">{{ close_bid_message }}</p>
+            {% endif %}
+        {% endif %}
+
+        
     
     
         <div class="listing-item">
@@ -54,34 +62,60 @@ Listing - {{ listing.title }}
             <!-- bid -->
             <div class="listing-item">
                 {% if user.is_authenticated and user != listing.owner %}
-                    <h5>Make a bid <i> (Starting from ${{ listing.last_bid }} )</i> </h5>
-                        <input  class="form-control" name="bid" type="number" min="{{ listing.last_bid }}">
-                        <input class="mt-1 btn btn-outline-primary" type="submit" value="Make bid">
+
+                    {% if listing.last_bid %}
+                        <h3>Make a bid: <i> (Starting from ${{ listing.last_bid.amount }} )</i> </h3>
+                        <div class="input-group">
+                            <input  class="col-6 form-control" name="bid" type="number" min="{{ listing.last_bid.amount }}">
+                        {% else %}
+                        <h3>Make a bid: <i> (Starting from $0 )</i> </h3>
+                        <div class="input-group">
+                            <input  class="col-6 form-control" name="bid" type="number" min="0">
+                    {% endif %}
+                    <span class="input-group-button">
+                        <input class="ml-1 btn btn-outline-primary form-control" type="submit" value="Make bid">
+                    </span>        
+                    </div>
+                        
                 {% endif %}
             </div>
+
+            <hr>
+            <h3>Details:</h3>
+                <!-- current price -->
+                <p class="col text-dark">Current price: <strong>${{ listing.total_price }}</strong></p>
+                <p class="col text-dark">Posted by: <span class="text-info">{{ listing.owner }} </span></p>
+                 <p class="col text-dark">Number of followers: {{ listing.following.all|length }} </p>
+                 <p class="col">{% if user in listing.following.all and user != listing.owner %}
+                      <i class="text-info">This item is in your watchlist</i>
+                       {%else %}
+                         {%endif%}
+                </p>
+                <p class="col text-dark">Category: {% if listing.category %} {{ listing.category }} {%else %} No category specified. {%endif %}</p>
+
+                <hr>
+                <!-- comments -->
+                    {% if user.is_authenticated %}
+                        <label for="comment">Leave a comment:</label>
+                        <textarea name="comment" id="comment" class="form-control" type="text" placeholder="comment..."></textarea>
+                        <input type="submit" value="Send Comment" class="btn btn-outline-primary btn-block mt-1">
+                        {% else %}
+                        <a href="{% url 'login' %}">Log in to comment</a>
+                    {% endif %}
+                    <!-- show comments-->
+                    <br>
+                    <h3>{{ listing.comments.all|length }} Comments:</h3>
+                    <ul>
+                        {% for comment in listing.comments.all %}
+                            <div class="col m-2">
+                                <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
+                            </div>
+                            {% endfor %}
+                    </ul>
         </form>
 
-     <p>Current price: ${{ listing.total_price }}</p>
-     <p>Number of followers: {{ listing.following.all|length }} </p>
-     <p>{% if user in listing.following.all and user != listing.owner %}
-          <i class="text-info">This item is in your watchlist</i>
-           {%else %}
-             {%endif%}
-    </p>
-    comments:
-    <ul>
-    {% for comment in listing.comments.all %}
-    <li>
-        <p>{{ comment }} <span class="blockquote-footer"> {{ comment.author }} </span></p>
-    </li>    
-    </ul>
+     
 </div>
 
-    {% empty %}
-        {% if user.is_authenticated %}
-            <li>Be the first to comment!</li>
-        {% else %}
-            <p class="text-warning">Log in to comment on this item</p>
-        {% endif %}
-    {% endfor %}
+    
 {% endblock %}

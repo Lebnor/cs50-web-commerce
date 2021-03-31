@@ -3,37 +3,38 @@
 
 
 {% block body %}
-    <h1 class="text-center">Active Listings</h1>
+    <h1 class="text-center">{{ header }}</h1>
 
 
-    <div class="row">
+    <div class="row justify-content-center">
     {% for listing in listings %}
-    <div  class="listing border col-lg-5 col-10 mx-auto">
+    <div class="listing listing-container border col-xl-3 col-lg-5 col-10">
         <a href="{% url 'listing' listing.uuid listing.title %}">
            <h3 class="text-center text"> {{ listing.title }} </h3>
         </a>
-           <p class="fs-1 text"> {{ listing.description }} </p>
+           <p class="fs-1 text"> Description: {{ listing.description }} </p>
             <hr>
 
            {% ifequal listing.winner user %}
             You won this listing
            {% else %}
             {% if listing.winner %}
-            <p>Winner: {{ listing.winner }}</p>
+            <p class="col text-info"><strong>Winner: {{ listing.winner }}</strong></p>
             {% endif %}
             {% endifequal %}
 
             {% if listing.photourl %}
             <a href="{% url 'listing' listing.uuid listing.title %}">
-                <img  class="w-25 mx-auto" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+                <img style="float: left;" class="mx-auto px-4 w-50" src="{{ listing.photourl }}" alt="{{ listing.title }}">
             </a>
             {% endif %}
-           <p>Current price: <strong> ${{ listing.total_price }} </strong> </p>
-            <p>Number of followers: {{ listing.following.all|length }} </p>
-            <p class="text-info">{% if user in listing.following.all %} <i>This item is in your watchlist </i> {%else %} {%endif%}</p>
+            <h3>Info:</h3>
+            <p class="col">Current price: <strong> ${{ listing.total_price }} </strong> </p>
+            <p class="col">Number of followers: {{ listing.following.all|length }} </p>
+            <p class="col text-info">{% if user in listing.following.all %} <i>This item is in your watchlist </i> {%else %} {%endif%}</p>
            
            <!-- comments -->
-            <p class="text-dark">There are {{ listing.comments.all|length }} comments on this item</p>
+            <p class="col text-dark">There are {{ listing.comments.all|length }} comments on this item</p>
             
         </div>
 

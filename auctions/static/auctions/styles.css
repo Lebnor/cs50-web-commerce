@@ -5,19 +5,34 @@ body {
     overflow-x: hidden;
 }
 
+h3 {
+    font-weight: 200;
+}
+h1 > a {
+    color: inherit;
+}
+h1 > a:hover {
+    color: inherit;
+}
+
 .top-nav {
-    background: url('white-3d-wallpaper-707471.jpg');
-    padding: 1em;
+    background-image: linear-gradient(to right top, #ffffff, #e9f6ff, #bcf2ff, #7ef1ff, #4aeddf);    
+    padding: 2em;
     margin: 0px;
     min-width: 100vw;
     width: 100vw;
 }
 
 .listing-container {
+    width: 35vw;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .listing {
-    min-width: 200px;
+    min-width: 25vw;
     margin: 1em;
     padding: 1em;
     margin-bottom: 1em;
@@ -26,11 +41,27 @@ body {
 }
 
 .listing-item {
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin-top: 2em;
+    margin-bottom: 2em;
 }
 
 .text {
     word-wrap: break-word;
     max-width: 500px;
 }
+
+.category-wrapper {
+    max-height: 75vh; 
+    overflow-y: auto;
+}
+@media only screen and (max-width: 1500px) {
+    .listing-container {
+      width: 50vw;
+    }
+  }
+
+  @media only screen and (max-width: 900px) {
+    .listing-container {
+      width: 90vw;
+    }
+  }

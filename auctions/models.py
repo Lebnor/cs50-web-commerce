@@ -6,19 +6,25 @@ import uuid
 class User(AbstractUser):
     pass
 
+class Bid(models.Model):
+    bidder = models.ForeignKey(User, related_name='bid', on_delete=models.CASCADE, null=True, blank=True)
+    amount = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.bidder}: ${self.amount}"
+
 class Listing(models.Model):
-    uuid = models.UUIDField(primary_key=False, editable=False, default = uuid.uuid4)
+    uuid = models.UUIDField(unique=True, primary_key=False, editable=False, default = uuid.uuid4)
+    last_bid = models.ForeignKey(Bid, related_name='placedon', on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=200)
     photourl = models.CharField(max_length=150, blank=True)
-    last_bid = models.IntegerField(blank=True, default=0)
-    highest_bid = models.IntegerField(null=True, blank=True, default=0)
-    highest_bidder = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.CharField(null=True, blank=True, max_length=32)
     total_price = models.IntegerField(blank=True, null=True, default=0)
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING,related_name='won', null=True, blank=True, unique=False)
-    following = models.ManyToManyField(User, related_name='following', blank=True, null=True)
-    category = models.CharField(null=True, blank=True, max_length=32)
+    following = models.ManyToManyField(User, related_name='following', blank=True)
     owner = models.ForeignKey(User, null=True, blank=True, related_name='created', on_delete=models.CASCADE)
+    
     def __str__(self):
         return f"{self.title}"
 
