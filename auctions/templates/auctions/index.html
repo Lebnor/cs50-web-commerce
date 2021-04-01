@@ -15,21 +15,26 @@
            <p class="fs-1 text"> Description: {{ listing.description }} </p>
             <hr>
 
-           {% ifequal listing.winner user %}
+            {% ifequal listing.winner user %}
             You won this listing
-           {% else %}
+            {% else %}
             {% if listing.winner %}
             <p class="col text-info"><strong>Winner: {{ listing.winner }}</strong></p>
             {% endif %}
             {% endifequal %}
+           
 
             {% if listing.photourl %}
+            <div class="text-center">
             <a href="{% url 'listing' listing.uuid listing.title %}">
-                <img style="float: left;" class="mx-auto px-4 w-50" src="{{ listing.photourl }}" alt="{{ listing.title }}">
+                <img style="" class="mx-auto px-4 w-50" src="{{ listing.photourl }}" alt="{{ listing.title }}">
             </a>
+        </div>
             {% endif %}
+
             <h3>Info:</h3>
             <p class="col">Current price: <strong> ${{ listing.total_price }} </strong> </p>
+            <p class="col">Posted by: <span class="text-info">{{ listing.owner }}</span></p>
             <p class="col">Number of followers: {{ listing.following.all|length }} </p>
             <p class="col text-info">{% if user in listing.following.all %} <i>This item is in your watchlist </i> {%else %} {%endif%}</p>
            

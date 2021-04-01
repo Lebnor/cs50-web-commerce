@@ -5,7 +5,7 @@ attributes = {
     'rows': 3
 }
 
-# choices list copied from ebay
+# categories list copied from ebay
 categories = (('Antiques', 'Antiques'),
 ('Art', 'Art'),
 ('Baby', 'Baby'),

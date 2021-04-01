@@ -2,6 +2,8 @@ body {
     width: 100vw;
     margin: 0px;
     padding: 0px;
+    min-height: 100vh;
+    position: relative;
     overflow-x: hidden;
 }
 
@@ -54,6 +56,14 @@ h1 > a:hover {
     max-height: 75vh; 
     overflow-y: auto;
 }
+
+footer {
+    width: 100vw;
+    position: absolute;
+    bottom: 0px;
+    background-color: seashell;
+}
+
 @media only screen and (max-width: 1500px) {
     .listing-container {
       width: 50vw;
